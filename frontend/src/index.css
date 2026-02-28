@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+  /* Indigo 600 */
+  --color-primary-hover: #4338CA;
+  --color-secondary: #0ea5e9;
+  /* Sky 500 */
+  --color-background: #0f172a;
+  /* Slate 900 for dark mode feel, or keep light but with gradients */
+  --color-text-main: #1e293b;
+  --color-text-muted: #64748b;
+}
+
+body {
+  /* Premium modern gradient background animated */
+  background: linear-gradient(-45deg, #e0e7ff, #f8fafc, #c7d2fe, #f1f5f9);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: var(--color-text-main);
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}

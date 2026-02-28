@@ -1,0 +1,195 @@
+{
+  "6": [
+    {
+      "id": "f5ac9583-5b42-419f-8342-f814a91352f6",
+      "question": "What does CPU stand for?",
+      "options": [
+        "Central Processing Unit",
+        "Computer Personal Unit",
+        "Central Processor Unit",
+        "Central Peripheral Unit"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "426f16f5-2239-4008-ab4a-f0ca08892376",
+      "question": "Which of these is an input device?",
+      "options": [
+        "Monitor",
+        "Printer",
+        "Keyboard",
+        "Speaker"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "fb211edf-f3e2-4c0f-b0cc-400cf7961af4",
+      "question": "What is the brain of the computer?",
+      "options": [
+        "Monitor",
+        "Keyboard",
+        "CPU",
+        "Mouse"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "8fbe42b1-5854-46a7-a224-a85cf3276213",
+      "question": "Which application is used for typing documents?",
+      "options": [
+        "MS Paint",
+        "MS Word",
+        "Calculator",
+        "Solitaire"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "fed105b4-7d49-4511-b751-a3c4b2a42ca8",
+      "question": "What does RAM stand for?",
+      "options": [
+        "Read Access Memory",
+        "Random Access Memory",
+        "Run Access Memory",
+        "Real Access Memory"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "70b97a3f-608c-4565-881a-e1a146e8c1d0",
+      "question": "वेबसाइट क्या होती है?",
+      "options": [
+        "एक कंप्यूटर",
+        "इंटरनेट पर उपलब्ध वेब पेजों का समूह",
+        "एक सॉफ्टवेयर",
+        "एक प्रिंटर"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "72d0c852-ab87-4aa4-bae7-52e66a54b4da",
+      "question": "किस सॉफ्टवेयर की मदद से हम इंटरनेट पर वेबसाइट खोलते हैं?",
+      "options": [
+        "MS Word",
+        "Paint",
+        "वेब ब्राउज़र",
+        "Calculator"
+      ],
+      "correct": 1
+    }
+  ],
+  "7": [
+    {
+      "id": "44ff5618-7048-4f3d-86e3-5f7f7f8a1da1",
+      "question": "What is an Operating System?",
+      "options": [
+        "A type of hardware",
+        "System software that manages computer hardware and software resources",
+        "A computer programming language",
+        "A network protocol"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "67db98ae-52f6-4b20-ad2d-727cad84882b",
+      "question": "Which of the following is NOT an operating system?",
+      "options": [
+        "Windows",
+        "Linux",
+        "Microsoft Office",
+        "macOS"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "b2de4965-1d8d-4ea0-bd94-29ae7b3377d2",
+      "question": "What is a computer network?",
+      "options": [
+        "A collection of hardware components",
+        "Interconnected computers sharing resources",
+        "A type of software application",
+        "A single standalone computer"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "f0249eda-57dd-4ed3-ba8f-f313dc35e81c",
+      "question": "What does LAN stand for?",
+      "options": [
+        "Local Area Network",
+        "Large Area Network",
+        "Logical Area Network",
+        "Long Area Network"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "6b665924-cf24-4b71-b077-a1a95d3b779f",
+      "question": "Which device is used to connect multiple computers in a LAN?",
+      "options": [
+        "Monitor",
+        "Printer",
+        "Switch or Hub",
+        "Keyboard"
+      ],
+      "correct": 2
+    }
+  ],
+  "8": [
+    {
+      "id": "64fef73e-dbb0-4d28-a82f-4f50504b7dd8",
+      "question": "What does HTML stand for?",
+      "options": [
+        "HyperText Markup Language",
+        "HyperLinks and Text Markup Language",
+        "Home Tool Markup Language",
+        "Hyper Tool Markup Language"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "0f096cf1-2d8c-4442-bade-e5d1464c13ee",
+      "question": "Which programming language is typically used for adding interactivity to a webpage?",
+      "options": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Python"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "fe052abd-2199-41c6-8cf7-6472c54a9610",
+      "question": "What is the function of a router in a network?",
+      "options": [
+        "To scan for viruses",
+        "To display images on the screen",
+        "To forward data packets between computer networks",
+        "To store data permanently"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "67228c48-9d53-4699-b4c4-da52ea3364b5",
+      "question": "What is an IP address?",
+      "options": [
+        "A secret password",
+        "A unique string of numbers identifying each computer communicating over a network",
+        "A physical location of a computer",
+        "A type of computer memory"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "b49cc50f-0e83-49d8-9dde-3b0daaa6b21e",
+      "question": "In binary, what does '10' represent in decimal validation?",
+      "options": [
+        "10",
+        "2",
+        "1",
+        "0"
+      ],
+      "correct": 1
+    }
+  ]
+}
