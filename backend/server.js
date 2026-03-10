@@ -50,11 +50,14 @@ app.post('/api/submit', (req, res) => {
     const results = JSON.parse(rawData);
 
     // Prevent duplicate submission for same roll in same session
-    // For simplicity, we assume one submission per roll number globally for now,
-    // or you could check if the date is within the same day.
-    const existing = results.find(r => r.roll === String(roll) && r.class === String(studentClass));
+    // Now checks if the date is within the same day to allow future exams
+    const today = new Date().toISOString().split('T')[0];
+    const existing = results.find(r => {
+      const isSameDay = r.date && r.date.startsWith(today);
+      return r.roll === String(roll) && r.class === String(studentClass) && isSameDay;
+    });
     if (existing) {
-      return res.status(403).json({ error: 'Student has already submitted the exam for this class.' });
+      return res.status(403).json({ error: 'Student has already submitted the exam for this class today.' });
     }
 
     const newResult = {

@@ -39,11 +39,19 @@ export default function AdminResults() {
         }
     };
 
+    const filteredResults = results
+        .filter(r => filterClass === 'all' || String(r.class) === String(filterClass))
+        .sort((a, b) => {
+            if (sortBy === 'score') return b.percentage - a.percentage;
+            if (sortBy === 'name') return a.name.localeCompare(b.name);
+            return new Date(b.date) - new Date(a.date);
+        });
+
     const exportToCSV = () => {
-        if (results.length === 0) return;
+        if (filteredResults.length === 0) return;
 
         const headers = ['Name,Roll Number,Class,Score,Total,Percentage,Date'];
-        const csvRows = results.map(r =>
+        const csvRows = filteredResults.map(r =>
             `${r.name},${r.roll},${r.class},${r.score},${r.total},${r.percentage},"${new Date(r.date).toLocaleString()}"`
         );
 
@@ -53,19 +61,13 @@ export default function AdminResults() {
 
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `exam_results_${new Date().toLocaleDateString()}.csv`);
+        const className = filterClass === 'all' ? 'all_classes' : `class_${filterClass}`;
+        const dateStr = new Date().toLocaleDateString().replace(/\//g, '-');
+        link.setAttribute('download', `exam_results_${className}_${dateStr}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
-
-    const filteredResults = results
-        .filter(r => filterClass === 'all' || String(r.class) === String(filterClass))
-        .sort((a, b) => {
-            if (sortBy === 'score') return b.percentage - a.percentage;
-            if (sortBy === 'name') return a.name.localeCompare(b.name);
-            return new Date(b.date) - new Date(a.date);
-        });
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading results...</div>;
 
@@ -81,7 +83,7 @@ export default function AdminResults() {
                 <div className="mt-4 sm:mt-0 flex gap-3">
                     <button
                         onClick={exportToCSV}
-                        disabled={results.length === 0}
+                        disabled={filteredResults.length === 0}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2 text-sm font-medium transition-colors"
                     >
                         <Download size={16} />

@@ -113,17 +113,6 @@
       "correct": 1
     },
     {
-      "id": "f0249eda-57dd-4ed3-ba8f-f313dc35e81c",
-      "question": "What does LAN stand for?",
-      "options": [
-        "Local Area Network",
-        "Large Area Network",
-        "Logical Area Network",
-        "Long Area Network"
-      ],
-      "correct": 0
-    },
-    {
       "id": "6b665924-cf24-4b71-b077-a1a95d3b779f",
       "question": "Which device is used to connect multiple computers in a LAN?",
       "options": [
