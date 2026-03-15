@@ -1,5 +1,30 @@
+# Node
 node_modules/
-.env
-.DS_Store
+npm-debug.log*
+
+# Build and Dist
+dist/
+dist-app/
+dist-package/
+dist-installer/
 frontend/dist/
+frontend/node_modules/
+build/
+
+# Database
+backend/exam_portal.sqlite
+backend/questions.json
 backend/result.json
+*.db
+*.sqlite
+
+# Environment and Logs
+.env
+*.log
+
+# OS and IDE
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
