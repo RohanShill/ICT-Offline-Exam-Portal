@@ -14,6 +14,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminQuestions from './pages/admin/AdminQuestions';
 import AdminResults from './pages/admin/AdminResults';
+import AdminSessions from './pages/admin/AdminSessions';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
 
             <Route element={<AdminLayout />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/sessions" element={<AdminSessions />} />
               <Route path="/admin/questions" element={<AdminQuestions />} />
               <Route path="/admin/results" element={<AdminResults />} />
             </Route>

@@ -1,46 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #4F46E5;
-  /* Indigo 600 */
-  --color-primary-hover: #4338CA;
-  --color-secondary: #0ea5e9;
-  /* Sky 500 */
-  --color-background: #0f172a;
-  /* Slate 900 for dark mode feel, or keep light but with gradients */
-  --color-text-main: #1e293b;
-  --color-text-muted: #64748b;
+  --color-primary: #6366f1;
+  --color-primary-hover: #4f46e5;
+  --color-secondary: #8b5cf6;
+  --font-sans: 'Inter', sans-serif;
 }
 
 body {
-  /* Premium modern gradient background animated */
-  background: linear-gradient(-45deg, #e0e7ff, #f8fafc, #c7d2fe, #f1f5f9);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  color: var(--color-text-main);
-  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  /* Global Dark Navy Database Background from spec */
+  background: linear-gradient(to bottom right, #0f172a, #020617);
+  background-attachment: fixed;
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+/* Base scrollbar styling for modern look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
-
-/* Glassmorphism utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); 
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2); 
 }

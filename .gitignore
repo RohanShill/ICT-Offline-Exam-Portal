@@ -10,11 +10,14 @@ dist-installer/
 frontend/dist/
 frontend/node_modules/
 build/
+*.asar
 
 # Database
 backend/exam_portal.sqlite
 backend/questions.json
 backend/result.json
+backend/sessions.json
+backend/settings.json
 *.db
 *.sqlite
 

@@ -11,6 +11,10 @@ app.use(express.json());
 
 // Path to results file
 const resultsPath = path.join(__dirname, 'result.json');
+const sessionsPath = path.join(__dirname, 'sessions.json');
+const settingsPath = path.join(__dirname, 'settings.json');
+if (!fs.existsSync(settingsPath)) { fs.writeFileSync(settingsPath, JSON.stringify({ showAnswers: false })); }
+if (!fs.existsSync(sessionsPath)) { fs.writeFileSync(sessionsPath, JSON.stringify([])); }
 
 // Ensure result.json exists
 if (!fs.existsSync(resultsPath)) {
@@ -18,6 +22,63 @@ if (!fs.existsSync(resultsPath)) {
 }
 
 // API Routes
+// Live tracking memory store
+const activeExams = new Map();
+
+app.post('/api/student/exam/ping', (req, res) => {
+  const { name, roll, studentClass, progress, status, timeRemaining } = req.body;
+  
+  if (!roll || !studentClass) return res.status(400).json({error: 'missing parameters'});
+  
+  const key = `${roll}-${studentClass}`;
+  
+  // If exam just finished (status submitted), we can optionally clear them immediately
+  if (status === 'Submitted') {
+      activeExams.delete(key);
+      return res.json({ success: true });
+  }
+
+  activeExams.set(key, {
+    name: String(name),
+    roll: String(roll),
+    studentClass: String(studentClass),
+    progress: progress || '0%',
+    status: status || 'In Progress',
+    timeRemaining,
+    lastActive: Date.now()
+  });
+  
+  res.json({ success: true });
+});
+
+// Student Session Verification
+app.post('/api/student/verify-session', (req, res) => {
+  try {
+    const { studentClass } = req.body;
+    if (!studentClass) return res.status(400).json({ error: 'Class is required' });
+
+    const sessionsPath = path.join(__dirname, 'sessions.json');
+    const sessions = fs.existsSync(sessionsPath) ? JSON.parse(fs.readFileSync(sessionsPath, 'utf8')) : [];
+    
+    const isActive = sessions.some(s => s.status === 'ACTIVE' && String(s.class) === String(studentClass));
+
+    if (isActive) {
+      res.json({ success: true });
+    } else {
+      res.status(403).json({ error: `No active exam session is currently running for Class ${studentClass}. Please wait for the administrator to start the session.` });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to verify session' });
+  }
+});
+
+// Settings API
+app.get('/api/settings', (req, res) => {
+  try {
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    res.json(settings);
+  } catch (err) { res.status(500).json({ error: 'Failed to load settings' }); }
+});
 app.get('/api/questions', (req, res) => {
   const studentClass = req.query.class;
   const questionsPath = path.join(__dirname, 'questions.json');
@@ -146,6 +207,27 @@ app.get('/api/admin/dashboard-stats', requireAdmin, (req, res) => {
   }
 });
 
+// 1.5 GET Live Monitor
+app.get('/api/admin/live-monitor', requireAdmin, (req, res) => {
+  try {
+    const now = Date.now();
+    const activeList = [];
+
+    for (const [key, data] of activeExams.entries()) {
+        // Drop them if inactive for over 35 seconds
+        if (now - data.lastActive > 35000) {
+            activeExams.delete(key);
+        } else {
+            activeList.push(data);
+        }
+    }
+
+    res.json(activeList);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get live monitor' });
+  }
+});
+
 // 2. GET Questions (Admin view)
 app.get('/api/admin/questions/:class', requireAdmin, (req, res) => {
   try {
@@ -263,6 +345,48 @@ app.delete('/api/admin/results/:roll/:studentClass', requireAdmin, (req, res) =>
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete result' });
   }
+});
+
+
+// 8. GET Exam Sessions
+app.get('/api/admin/sessions', requireAdmin, (req, res) => {
+  try {
+    const sessions = JSON.parse(fs.readFileSync(sessionsPath, 'utf8'));
+    res.json(sessions);
+  } catch (err) { res.status(500).json({ error: 'Failed to retrieve sessions' }); }
+});
+
+// 9. POST Exam Sessions
+app.post('/api/admin/sessions', requireAdmin, (req, res) => {
+  try {
+    const { name, class: targetClass, duration, date, status } = req.body;
+    const crypto = require('crypto');
+    const newSession = { id: crypto.randomUUID(), name, class: targetClass, duration: Number(duration), date, status: status || 'ACTIVE' };
+    const sessions = JSON.parse(fs.readFileSync(sessionsPath, 'utf8'));
+    sessions.push(newSession);
+    fs.writeFileSync(sessionsPath, JSON.stringify(sessions, null, 2));
+    res.status(201).json(newSession);
+  } catch (err) { res.status(500).json({ error: 'Failed to create session' }); }
+});
+
+// 10. DELETE Exam Session
+app.delete('/api/admin/sessions/:id', requireAdmin, (req, res) => {
+  try {
+    const { id } = req.params;
+    let sessions = JSON.parse(fs.readFileSync(sessionsPath, 'utf8'));
+    sessions = sessions.filter(s => s.id !== id);
+    fs.writeFileSync(sessionsPath, JSON.stringify(sessions, null, 2));
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: 'Failed to delete' }); }
+});
+
+// 11. POST Settings
+app.post('/api/admin/settings', requireAdmin, (req, res) => {
+  try {
+    const newSettings = req.body;
+    fs.writeFileSync(settingsPath, JSON.stringify(newSettings, null, 2));
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: 'Failed' }); }
 });
 
 // Serve static frontend files

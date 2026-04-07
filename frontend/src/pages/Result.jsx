@@ -1,25 +1,21 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useExam } from '../context/ExamContext';
-import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
 
 export default function Result() {
     const { studentInfo, examState, logout } = useExam();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // If not logged in or exam not finished, redirect
         if (!studentInfo || !examState.isFinished) {
             navigate('/');
         }
     }, [studentInfo, examState.isFinished, navigate]);
 
     if (!studentInfo || !examState.isFinished || !examState.questions) {
-        return null; // Will redirect shortly
+        return <div className="min-h-screen bg-[#111827]"></div>;
     }
 
-    // Calculate score locally since we don't fetch it back from /submit
     let score = 0;
     const total = examState.questions.length;
     examState.questions.forEach((q, index) => {
@@ -37,53 +33,61 @@ export default function Result() {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center p-4">
-            <Card className="w-full max-w-lg text-center">
-                <CardHeader className={`border-b-4 ${isPass ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
-                    <CardTitle className={isPass ? 'text-green-800' : 'text-red-800'}>
+        <div className="min-h-screen bg-[#111827] flex items-center justify-center p-4 font-sans">
+            <div className="w-full max-w-[420px] bg-[#cfd4de] rounded-xl overflow-hidden shadow-2xl relative">
+                
+                {/* Header Section */}
+                <div className="pt-8 pb-4 text-center border-b border-gray-100/50 relative z-10 px-8">
+                    <h2 className={`font-bold text-[15px] mb-4 ${isPass ? 'text-green-800' : 'text-red-800'}`}>
                         {isPass ? 'Examination Passed' : 'Examination Failed'}
-                    </CardTitle>
-                    <div className="mt-2 flex justify-center">
+                    </h2>
+                    
+                    <div className="flex justify-center mb-2">
                         {isPass ? (
-                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                            <div className="w-12 h-12 bg-[#cfd4de] border-2 border-green-500 rounded-full flex items-center justify-center text-green-600 bg-white/50">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                             </div>
                         ) : (
-                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
+                            <div className="w-12 h-12 bg-[#cfd4de] border-2 border-red-500 rounded-full flex items-center justify-center text-red-600 bg-white/50">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                             </div>
                         )}
                     </div>
-                </CardHeader>
+                </div>
 
-                <CardContent className="space-y-6 pt-8">
-                    <div>
-                        <h3 className="text-2xl font-bold text-gray-800">{studentInfo.name}</h3>
-                        <p className="text-gray-500">Roll: {studentInfo.roll} • Class: {studentInfo.studentClass}</p>
+                {/* Body Section */}
+                <div className="px-8 pb-8 pt-6 flex flex-col items-center text-center">
+                    
+                    {/* User Details */}
+                    <div className="mb-6">
+                        <h3 className="font-bold text-gray-900 text-lg">{studentInfo.name}</h3>
+                        <p className="text-gray-500 text-xs font-semibold">Roll: {studentInfo.roll} • Class: {studentInfo.studentClass}</p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold mb-1">Score</p>
-                                <p className="text-3xl font-bold text-gray-800">{score} / {total}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500 uppercase tracking-wider font-semibold mb-1">Percentage</p>
-                                <p className={`text-3xl font-bold ${isPass ? 'text-green-600' : 'text-red-600'}`}>{percentage}%</p>
-                            </div>
+                    {/* Score Box */}
+                    <div className="bg-white rounded-xl w-full flex p-5 mb-8 shadow-sm">
+                        <div className="flex-1 border-r border-gray-200">
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Score</p>
+                            <p className="text-2xl font-bold text-gray-900">{score} / {total}</p>
+                        </div>
+                        <div className="flex-1">
+                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Percentage</p>
+                            <p className={`text-2xl font-bold ${isPass ? 'text-green-600' : 'text-red-600'}`}>{percentage}%</p>
                         </div>
                     </div>
 
-                    <div className="text-sm text-gray-400">
+                    <p className="text-[#a1a1aa] text-[10px] font-medium mb-6">
                         Submitted on {new Date().toLocaleString()}
-                    </div>
+                    </p>
 
-                    <Button variant="secondary" className="w-full mt-4" onClick={handleRestart}>
+                    <button 
+                        onClick={handleRestart}
+                        className="w-full bg-[#f4f4f5] hover:bg-white text-gray-800 font-bold text-xs py-3 rounded-lg shadow-sm border border-gray-200 transition-colors"
+                    >
                         Return to Login
-                    </Button>
-                </CardContent>
-            </Card>
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

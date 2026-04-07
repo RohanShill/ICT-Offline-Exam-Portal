@@ -37,4 +37,9 @@ export const getResults = async () => {
     return response.data;
 };
 
+export const verifyExamSession = async (studentClass) => {
+    const response = await api.post('/student/verify-session', { studentClass });
+    return response.data;
+};
+
 export default api;
