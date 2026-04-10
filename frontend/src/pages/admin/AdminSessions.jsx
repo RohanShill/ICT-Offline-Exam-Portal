@@ -15,6 +15,7 @@ export default function AdminSessions() {
     const [formData, setFormData] = useState({
         name: '',
         class: '6',
+        section: 'ALL',
         duration: 30,
         date: new Date().toISOString().split('T')[0],
         status: 'ACTIVE'
@@ -40,6 +41,7 @@ export default function AdminSessions() {
         setFormData({
             name: '',
             class: '6',
+            section: 'ALL',
             duration: 30,
             date: new Date().toISOString().split('T')[0],
             status: 'ACTIVE'
@@ -110,7 +112,7 @@ export default function AdminSessions() {
                                         {session.status}
                                     </div>
                                     <div className="bg-purple-50 text-purple-700 px-3 py-1 rounded-lg text-xs font-bold shadow-sm">
-                                        Class {session.class}
+                                        Class {session.class} {session.section && session.section !== 'ALL' ? `• Sec ${session.section}` : '• All Sections'}
                                     </div>
                                 </div>
                                 
@@ -177,6 +179,21 @@ export default function AdminSessions() {
                                         <option value="8">Class 8</option>
                                     </select>
                                 </div>
+                                <div className="space-y-1.5">
+                                    <label className="block text-sm font-bold text-gray-700">Section</label>
+                                    <select
+                                        value={formData.section}
+                                        onChange={(e) => setFormData({ ...formData, section: e.target.value })}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 text-gray-900 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none font-medium shadow-sm transition-all appearance-none"
+                                    >
+                                        <option value="ALL">All Sections</option>
+                                        <option value="A">Section A</option>
+                                        <option value="B">Section B</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
                                     <label className="block text-sm font-bold text-gray-700">Status</label>
                                     <select
