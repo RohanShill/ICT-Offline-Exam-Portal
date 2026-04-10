@@ -1,230 +1,73 @@
-# 🎓 ICT Exam Portal V2
+# 🎓 ICT Offline Exam Portal
 
-> A modern, full-stack **Online Examination System** built for ICT classes — with a sleek Admin Dashboard and a clean Student Exam Interface. Designed to run on a local network (LAN), making it perfect for schools and computer labs without requiring an internet connection.
-
----
-
-## ✨ What's New in V2
-
-This is a **complete rewrite** of the original ICT Exam Portal with major improvements:
-
-- 🎨 **Redesigned UI** — Premium SaaS-style dark theme with glassmorphism cards, smooth gradients, and micro-animations
-- 📡 **Live Exam Monitoring** — Real-time tracking of students currently taking the exam via lightweight heartbeat polling
-- ⚙️ **Global Exam Settings** — Admin can toggle "Show Immediate Answers" on/off dynamically for all students mid-exam
-- 🔒 **Session Enforcement** — Students cannot start an exam unless the admin has created an active exam session for their class
-- 📊 **Enhanced Admin Dashboard** — Live stats, question bank management, session scheduling, and result exports
+A robust, full-stack Offline Examination Portal built for schools and educational institutions. This platform empowers administrators to manage questions, schedule completely secure exam sessions, and monitor student progress in real-time, all engineered to run cleanly on a local network or offline environment.
 
 ---
 
-## 🏗️ Tech Stack
+## 🚀 Key Features
 
-| Layer      | Technology                          |
-|------------|-------------------------------------|
-| Frontend   | React 18 (Vite), TailwindCSS       |
-| Backend    | Node.js, Express.js                 |
-| Storage    | JSON file-based (no database setup) |
-| Networking | LAN-accessible via `0.0.0.0`       |
+### 👨‍🎓 Student Experience
+*   **Dual-Branded UI:** Dynamically displays the school's localized name and portal title.
+*   **Anti-Cheat Fullscreen Mode:** Students are automatically locked into a fullscreen application environment. Navigating away triggers persistent warnings and forces submission upon violations.
+*   **Dynamic Timers & Sessions:** Timers correctly respond directly to scheduled configurations defined by the administrator—eliminating hardcoded limits.
+*   **Shuffled question/option order:** Prevents screen-looking by completely randomizing questions and options specifically for each test taker.
 
----
-
-## 📁 Project Structure
-
-```
-ICT Exam Portal V2/
-├── backend/
-│   ├── server.js          # Express API server
-│   ├── questions.json     # Question bank (per class)
-│   ├── result.json        # Student results
-│   ├── sessions.json      # Admin exam sessions
-│   └── settings.json      # Global settings (show answers toggle)
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Login.jsx          # Student login with session verification
-│   │   │   ├── Exam.jsx           # Exam interface with live pinging
-│   │   │   ├── Result.jsx         # Result display
-│   │   │   └── admin/
-│   │   │       ├── AdminLogin.jsx
-│   │   │       ├── AdminDashboard.jsx  # Stats + Live Monitor + Settings
-│   │   │       ├── AdminSessions.jsx   # Exam session management
-│   │   │       ├── AdminQuestions.jsx   # Question CRUD
-│   │   │       └── AdminResults.jsx    # Results & export
-│   │   ├── context/       # React Context (ExamContext, AdminAuthContext)
-│   │   ├── components/    # Reusable UI components
-│   │   └── utils/         # API utilities
-│   └── ...
-├── package.json
-└── README.md
-```
+### 🛡️ Admin Dashboard
+*   **Live Exam Monitor:** Shows a real-time sync of students currently taking active exams.
+*   **Exam Sessions Management:** Create and schedule targeted exams for specific classes, sections, and durations (e.g., test5 for 2 minutes).
+*   **Question Bank Management:** Add, edit, organize, and **Bulk Delete** questions separated by Class (6, 7, 8). 
+*   **Global Settings Interface:** Dynamically update School Branding, UDISE Codes, and "Show Answers Immediately" toggles without restarting the server.
+*   **Comprehensive Analytics:** Auto-tracking of completed participants and average scores.
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ Technology Stack
+
+**Frontend**
+*   React (Vite)
+*   Tailwind CSS (v4) - Fully responsive with Dark/Light Premium "Wash White" aesthetic
+*   Context API for state management
+
+**Backend**
+*   Node.js & Express.js
+*   SQLite (`better-sqlite3`) - Zero-configuration, local offline persistence layer.
+*   CORS configured for seamless local-network cross-origin data transfer.
+
+---
+
+## ⚙️ Installation & Usage
+
+Because this portal is designed to act as an offline LAN application, it consists of separated backend and frontend initialization.
 
 ### Prerequisites
+*   Node.js installed on the host machine.
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm (comes with Node.js)
-
-### Installation
-
+### 1. Start the Backend Server
 ```bash
-# Clone the repository
-git clone https://github.com/RohanShildit/ICT-Offline-Exam-Portal.git
-cd ICT-Offline-Exam-Portal
-
-# Install all dependencies (root + frontend + backend)
-npm run install-all
-```
-
-### Running the Application
-
-You need **two terminals** running simultaneously:
-
-**Terminal 1 — Backend Server:**
-```bash
+cd backend
+npm install
 npm run dev-backend
 ```
-> Server starts at `http://localhost:3000`
+*   This will initialize the `exam.db` SQLite database if it doesn't already exist.
+*   The server automatically runs on `http://0.0.0.0:3000`, making it accessible globally on your local network (LAN) for connected student machines.
 
-**Terminal 2 — Frontend Dev Server:**
+### 2. Start the Frontend Application
+In a separate terminal:
 ```bash
+cd frontend
+npm install
 npm run dev-frontend
 ```
-> Frontend starts at `http://localhost:5173`
-
-### Building for Production
-
-```bash
-npm run build
-npm start
-```
-> This builds the React frontend and serves everything from the Express backend on port 3000.
+*   This spins up the Vite development server on `http://localhost:5173`.
+*   Students running the webapp on connected systems will securely talk to your centralized host machine!
 
 ---
 
-## 👨‍🎓 Student Side
-
-### Login Screen
-- Students enter their **Full Name**, **Roll Number**, and select their **Class** (6, 7, or 8)
-- The system verifies if the admin has started an active exam session for that class
-- If no session is active, the student is blocked with a clear error message
-
-### Exam Interface
-- Clean, distraction-free exam environment
-- **Question Map** sidebar for quick navigation
-- **Mark for Review** functionality
-- **Auto-submit** when the timer runs out
-- **Live heartbeat** pings the server every 5 seconds so admins can monitor progress in real-time
-
-### Answer Reveal Mode
-- When the admin enables "Show Immediate Answers":
-  - ✅ Correct answers highlight in **green** with a checkmark
-  - ❌ Wrong answers highlight in **red** with an X, and the correct answer is revealed in green
-  - 🔒 The answer is **locked** — students cannot change it once selected
+## 🔒 Security
+*   **Anti-Refresh Timers:** Exam countdowns are locally cached into Session Storage, guaranteeing that students cannot reset their times by refreshing the page.
+*   **Administrative Routing:** API logic strictly enforces Bearer Tokens verifying the master administrator prior to wiping data or accessing global settings.
 
 ---
 
-## 🛡️ Admin Side
-
-### Login
-- URL: `/admin/login`
-- Default credentials: `admin` / `admin123`
-
-### Dashboard
-- **Total Participants** — Number of students who have completed exams
-- **Average Score** — Overall performance percentage
-- **Question Bank Count** — Per-class question totals
-- **Global Exam Configuration** — Toggle "Show Immediate Answers" on/off
-- **Live Exam Monitor** — See active test takers in real-time with progress bars and status
-
-### Exam Sessions
-- Create exam sessions per class with a name, date, and duration
-- Set status to `ACTIVE` or `ENDED`
-- Students can only begin exams when a session is `ACTIVE` for their class
-
-### Questions Management
-- Add, edit, and delete questions per class
-- Each question has 4 options with one correct answer
-- Bulk CSV upload support (coming soon)
-
-### Results
-- View all student results with scores and percentages
-- Delete individual results
-- Export functionality
-
----
-
-## 📡 Live Monitoring Architecture
-
-The live monitoring system is designed to be **extremely lightweight**, safe for low-powered school PCs:
-
-```
-Student Browser                    Server                     Admin Dashboard
-     │                               │                              │
-     │── POST /exam/ping ──────────►│                              │
-     │   (every 5 seconds)           │── stores in memory ──►      │
-     │                               │                              │
-     │                               │◄── GET /live-monitor ───────│
-     │                               │    (every 5 seconds)         │
-     │                               │                              │
-     │                               │── auto-cleanup after 35s ──►│
-```
-
-- **Student ping**: Tiny JSON payload every 5 seconds (~200 bytes)
-- **Server storage**: In-memory `Map` — zero disk I/O
-- **Auto-cleanup**: Students inactive for 35+ seconds are automatically removed
-- **No WebSockets**: Pure HTTP polling — works through any firewall/proxy
-
----
-
-## 🔧 API Endpoints
-
-### Public
-| Method | Endpoint                      | Description                    |
-|--------|-------------------------------|--------------------------------|
-| GET    | `/api/questions?class=X`      | Fetch questions for a class    |
-| POST   | `/api/submit`                 | Submit exam result             |
-| POST   | `/api/student/exam/ping`      | Student heartbeat for monitor  |
-| POST   | `/api/student/verify-session` | Verify active session exists   |
-| GET    | `/api/settings`               | Fetch global settings          |
-
-### Admin (requires Bearer token)
-| Method | Endpoint                            | Description              |
-|--------|-------------------------------------|--------------------------|
-| POST   | `/api/admin/login`                  | Admin authentication     |
-| GET    | `/api/admin/dashboard-stats`        | Dashboard statistics     |
-| GET    | `/api/admin/live-monitor`           | Active test takers       |
-| GET    | `/api/admin/questions/:class`       | Questions by class       |
-| POST   | `/api/admin/questions`              | Add a question           |
-| PUT    | `/api/admin/questions/:id`          | Update a question        |
-| DELETE | `/api/admin/questions/:id`          | Delete a question        |
-| GET    | `/api/admin/results`                | All results              |
-| DELETE | `/api/admin/results/:roll/:class`   | Delete a result          |
-| GET    | `/api/admin/sessions`               | All exam sessions        |
-| POST   | `/api/admin/sessions`               | Create exam session      |
-| DELETE | `/api/admin/sessions/:id`           | Delete exam session      |
-| POST   | `/api/admin/settings`               | Update global settings   |
-
----
-
-## 🌐 LAN Access
-
-The backend binds to `0.0.0.0`, making it accessible to any device on the same local network:
-
-1. Find your PC's local IP: `ipconfig` (Windows) or `ifconfig` (Mac/Linux)
-2. Students connect to: `http://YOUR_IP:3000`
-
----
-
-## 📝 License
-
-This project is built for educational purposes at PM Shri KGBV Hiranpur.
-
----
-
-## 👨‍💻 Developer
-
-**Rohan Shildit**
-
-Built with ❤️ for making ICT education accessible and engaging.
+### Developed for ICT Portals
+*Version: 2.0.0*

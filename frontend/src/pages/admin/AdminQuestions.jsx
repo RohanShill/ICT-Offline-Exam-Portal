@@ -10,6 +10,10 @@ export default function AdminQuestions() {
     const [selectedClass, setSelectedClass] = useState('6');
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
+    
+    // Bulk Selection State
+    const [selectedIds, setSelectedIds] = useState(new Set());
+    const [isDeletingBulk, setIsDeletingBulk] = useState(false);
 
     // Modal / Form state
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -35,6 +39,7 @@ export default function AdminQuestions() {
 
     useEffect(() => {
         fetchQuestions();
+        setSelectedIds(new Set());
     }, [selectedClass]);
 
     const handleOpenForm = (q = null) => {
@@ -107,15 +112,59 @@ export default function AdminQuestions() {
         }
     };
 
+    // Bulk selection handlers
+    const toggleSelect = (id) => {
+        const newSet = new Set(selectedIds);
+        if (newSet.has(id)) newSet.delete(id);
+        else newSet.add(id);
+        setSelectedIds(newSet);
+    };
+
+    const handleSelectAll = () => {
+        if (selectedIds.size === questions.length && questions.length > 0) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(questions.map(q => q.id)));
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+        if (!window.confirm(`Are you sure you want to delete ${selectedIds.size} selected questions?`)) return;
+
+        setIsDeletingBulk(true);
+        try {
+            await api.post('/admin/questions/bulk-delete', { ids: Array.from(selectedIds) }, { headers: getAuthHeaders() });
+            setSelectedIds(new Set());
+            fetchQuestions();
+        } catch (err) {
+            console.error('Bulk delete failed:', err);
+            alert(err.response?.data?.error || `Failed to delete selected questions (Error: ${err.message})`);
+        } finally {
+            setIsDeletingBulk(false);
+        }
+    };
+
     return (
         <div className="p-8 max-w-6xl mx-auto space-y-6 font-sans">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Question Management</h1>
-                    <p className="text-gray-400 mt-2">Add, edit, and organize exam questions</p>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Question Management</h1>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2 font-medium">Add, edit, and organize exam questions</p>
                 </div>
 
                 <div className="flex items-center gap-4">
+                    {selectedIds.size > 0 && (
+                        <Button 
+                            onClick={handleBulkDelete} 
+                            disabled={isDeletingBulk}
+                            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white border-0 shadow-md rounded-xl transition-all font-bold"
+                        >
+                            <Trash2 size={18} />
+                            {isDeletingBulk ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+                        </Button>
+                    )}
+
                     <select
                         value={selectedClass}
                         onChange={(e) => setSelectedClass(e.target.value)}
@@ -126,11 +175,6 @@ export default function AdminQuestions() {
                         <option value="8">Class 8</option>
                     </select>
 
-                    <Button onClick={() => alert('CSV Upload functionality to be implemented by backend API')} className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-md rounded-xl transition-all font-bold">
-                        <Upload size={18} />
-                        Bulk CSV
-                    </Button>
-
                     <Button onClick={() => handleOpenForm()} className="flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white border-0 shadow-md rounded-xl transition-all font-bold">
                         <Plus size={18} />
                         Question
@@ -140,7 +184,17 @@ export default function AdminQuestions() {
 
             <Card className="bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl overflow-hidden">
                 <CardHeader className="bg-gray-50/50 border-b border-gray-100 flex flex-row justify-between items-center py-5 px-8">
-                    <CardTitle className="text-gray-800 tracking-tight">Questions for Class {selectedClass}</CardTitle>
+                    <div className="flex items-center gap-4">
+                        {questions.length > 0 && (
+                            <input 
+                                type="checkbox" 
+                                className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                checked={selectedIds.size === questions.length}
+                                onChange={handleSelectAll}
+                            />
+                        )}
+                        <CardTitle className="text-gray-800 tracking-tight">Questions for Class {selectedClass}</CardTitle>
+                    </div>
                     <span className="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">
                         Total: {questions.length}
                     </span>
@@ -161,6 +215,14 @@ export default function AdminQuestions() {
                             {questions.map((q, idx) => (
                                 <li key={q.id} className="p-6 hover:bg-gray-50/80 transition-colors">
                                     <div className="flex justify-between items-start gap-4">
+                                        <div className="flex-shrink-0 pt-1">
+                                            <input 
+                                                type="checkbox" 
+                                                className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                                checked={selectedIds.has(q.id)}
+                                                onChange={() => toggleSelect(q.id)}
+                                            />
+                                        </div>
                                         <div className="flex-1">
                                             <div className="flex items-start gap-3">
                                                 <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs flex items-center justify-center mt-0.5 border border-indigo-100">

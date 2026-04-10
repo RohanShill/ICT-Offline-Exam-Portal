@@ -61,7 +61,7 @@ export default function Result() {
                     {/* User Details */}
                     <div className="mb-6">
                         <h3 className="font-bold text-gray-900 text-lg">{studentInfo.name}</h3>
-                        <p className="text-gray-500 text-xs font-semibold">Roll: {studentInfo.roll} • Class: {studentInfo.studentClass}</p>
+                        <p className="text-gray-500 text-xs font-semibold">Roll: {studentInfo.roll} • Class: {studentInfo.studentClass}{studentInfo.section ? ` • Section: ${studentInfo.section}` : ''}</p>
                     </div>
 
                     {/* Score Box */}

@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-primary: #6366f1;
   --color-primary-hover: #4f46e5;
@@ -9,14 +11,26 @@
 }
 
 body {
-  /* Global Dark Navy Database Background from spec */
-  background: linear-gradient(to bottom right, #0f172a, #020617);
-  background-attachment: fixed;
-  color: #f8fafc;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  /* Premium Light Mode Wash (Wash White) */
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(228, 50%, 96%, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(250, 40%, 96%, 1) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, hsla(200, 50%, 95%, 1) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: #0f172a;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark body {
+  /* Global Dark Navy Box Background */
+  background: linear-gradient(to bottom right, #0f172a, #020617);
+  background-attachment: fixed;
+  color: #f8fafc;
 }
 
 /* Base scrollbar styling for modern look */
