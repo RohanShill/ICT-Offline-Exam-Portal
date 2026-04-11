@@ -2,6 +2,10 @@
     "name": "ict-online-quiz-system",
     "version": "2.0.0",
     "description": "ICT Online Examination System",
+    "author": {
+        "name": "ICT Exam Portal",
+        "email": "admin@ictexamportal.com"
+    },
     "main": "main.js",
     "scripts": {
         "start": "electron .",
