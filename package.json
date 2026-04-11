@@ -11,7 +11,7 @@
         "dev-frontend": "npm run dev --prefix frontend",
         "build-fe": "npm run build --prefix frontend",
         "dist": "npm run build-fe && electron-builder --win",
-        "dist-linux": "npm run build-fe && electron-builder --linux",
+        "dist-linux": "npm run build-fe && electron-builder --linux --publish never",
         "install-all": "npm install && npm install --prefix frontend && npm install --prefix backend"
     },
     "dependencies": {
