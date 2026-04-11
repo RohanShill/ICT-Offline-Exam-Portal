@@ -1,14 +1,67 @@
 {
     "name": "ict-online-quiz-system",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "ICT Online Examination System",
-    "main": "backend/server.js",
+    "main": "main.js",
     "scripts": {
-        "start": "node backend/server.js",
+        "start": "electron .",
         "dev-backend": "node backend/server.js",
         "dev-frontend": "npm run dev --prefix frontend",
-        "build": "npm run build --prefix frontend",
+        "build-fe": "npm run build --prefix frontend",
+        "dist": "npm run build-fe && electron-builder --win",
+        "dist-linux": "npm run build-fe && electron-builder --linux",
         "install-all": "npm install && npm install --prefix frontend && npm install --prefix backend"
     },
-    "dependencies": {}
+    "dependencies": {
+        "better-sqlite3": "^12.8.0",
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "express": "^5.2.1"
+    },
+    "devDependencies": {
+        "@electron/packager": "^18.3.3",
+        "@electron/rebuild": "^3.2.13",
+        "electron": "^33.3.1",
+        "electron-builder": "^26.8.1"
+    },
+    "build": {
+        "appId": "com.ict.exam.portal.v2",
+        "productName": "ICT Exam Portal V2.0",
+        "directories": {
+            "output": "release"
+        },
+        "files": [
+            "backend/**/*",
+            "!backend/node_modules/**/*",
+            "frontend/dist/**/*",
+            "main.js",
+            "server.html",
+            "package.json"
+        ],
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ]
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "ICT Exam Portal V2.0"
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb"
+            ],
+            "category": "Education"
+        }
+    }
 }

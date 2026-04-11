@@ -76,7 +76,12 @@ export default function Login() {
                             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                                 {globalSettings.schoolName || "Welcome"}
                             </p>
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-center px-4">
+                            {globalSettings.udiseCode && (
+                                <p className="text-xs text-gray-400 dark:text-gray-500 font-medium mt-0.5" style={{letterSpacing: '0.5px'}}>
+                                    UDISE: {globalSettings.udiseCode}
+                                </p>
+                            )}
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-center px-4 mt-2">
                                 ICT Exam Portal
                             </h2>
                             <p className="text-gray-500 dark:text-gray-400 font-semibold text-xs pt-1 uppercase tracking-[0.15em]">
