@@ -30,6 +30,8 @@ jobs:
 
       - name: Build Linux Portable & Installer (.deb, .AppImage)
         run: npm run dist-linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Installer Artifacts
         uses: actions/upload-artifact@v4
