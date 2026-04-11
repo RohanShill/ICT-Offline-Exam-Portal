@@ -11,6 +11,9 @@ frontend/dist/
 frontend/node_modules/
 build/
 *.asar
+release/
+final-build/
+build-exe/
 
 # Database
 backend/exam_portal.sqlite

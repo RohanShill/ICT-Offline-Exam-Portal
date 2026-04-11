@@ -1,0 +1,42 @@
+name: Build Ubuntu Installer
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install --prefix frontend
+          npm install --prefix backend
+
+      - name: Build the React Application
+        run: npm run build-fe
+
+      - name: Build Linux Portable & Installer (.deb, .AppImage)
+        run: npm run dist-linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Installer Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ICT-Exam-Portal-Ubuntu-Installer
+          path: |
+            release/*.deb
+            release/*.AppImage

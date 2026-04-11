@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ICT Exam Portal - Server Control</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --border: #334155;
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px 20px; display: flex; justify-content: center; user-select: none; }
+        .container { max-width: 800px; width: 100%; display: grid; gap: 24px; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 28px; font-weight: 700; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-group { display: flex; gap: 12px; align-items: center; }
+        
+        .status-badge { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 99px; font-weight: 600; font-size: 14px; background: rgba(255,255,255,0.05); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .running .status-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .stopped .status-dot { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .running .status-text { color: var(--success); }
+        .stopped .status-text { color: var(--danger); }
+
+        .url-box { background: #020617; border: 1px solid var(--border); padding: 16px 20px; border-radius: 12px; font-family: monospace; font-size: 28px; color: #4ade80; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .copy-btn { background: rgba(255,255,255,0.1); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: 'Segoe UI'; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+        button { padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn-success { background: rgba(34, 197, 94, 0.1); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .btn-success:hover { background: rgba(34, 197, 94, 0.2); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
+        .stat-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .stat-value { font-size: 36px; font-weight: 700; margin-bottom: 4px; color: white; }
+        .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .instructions { margin-top: 20px; }
+        .instructions h3 { font-size: 16px; margin-bottom: 12px; color: white; }
+        .instructions ol { padding-left: 20px; color: var(--muted); line-height: 1.6; margin: 0; }
+        .instructions li { padding-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>💻 ICT Exam Sever</h1>
+        <div id="statusBadge" class="status-badge running">
+            <div class="status-dot"></div>
+            <span class="status-text" id="statusText">Running</span>
+        </div>
+    </div>
+
+    <!-- Networking Card -->
+    <div class="card">
+        <h3 style="margin-top:0; color:var(--muted); font-size:14px; text-transform:uppercase; letter-spacing: 1px;">Network Broadcasting</h3>
+        
+        <div class="url-box">
+            <span id="ipAddress" style="user-select:all;">Fetching IP...</span>
+            <button class="copy-btn" onclick="copyUrl()" id="copyBtn">Copy URL</button>
+        </div>
+
+        <div class="btn-grid">
+            <button class="btn-primary" onclick="openAdmin()">⚙️ Open Admin Panel</button>
+            <button class="btn-primary" style="background:#475569;" onclick="openStudent()">🎓 Open Student View</button>
+        </div>
+    </div>
+
+    <!-- Server Controls & Stats -->
+    <div class="stats-grid">
+        <div class="card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <div class="stat-value" id="studentCount">0</div>
+            <div class="stat-label">Active Connections</div>
+            <div style="font-size:11px; color:#64748b; margin-top:8px;">Live Devices Polling LAN</div>
+        </div>
+
+        <div class="card" style="display:flex; flex-direction:column; justify-content:center; gap:12px;">
+            <div class="stat-label" style="text-align:center;">Power Controls</div>
+            <button id="toggleBtn" class="btn-danger" onclick="toggleServer()" style="width:100%; padding: 16px; font-size: 16px;">🛑 Stop Server</button>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="card instructions">
+        <h3>📋 Teacher Instructions</h3>
+        <ol>
+            <li>Ensure the status indicator at the top right correctly displays green <strong style="color:var(--success)">Running</strong>.</li>
+            <li>Click <strong style="color:white">Open Admin Panel</strong> to safely launch the dashboard in your default browser (Chrome/Edge) to create the exam session.</li>
+            <li>Write the exact bolded URL address above on the whiteboard for your class.</li>
+            <li>Monitor the <strong style="color:white">Active Connections</strong> tracker to verify all students are connected to your computer over Wi-Fi seamlessly.</li>
+            <li>When the exam completes, explicitly click <strong style="color:var(--danger)">Stop Server</strong> to safely end the LAN signal.</li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    const { ipcRenderer } = require('electron');
+    let isRunning = true;
+    let serverIpStr = "";
+
+    // Fetch local network IP from Electron Node context
+    ipcRenderer.invoke('get-ip').then(ip => {
+        serverIpStr = `http://${ip}:3000`;
+        document.getElementById('ipAddress').innerText = serverIpStr;
+    });
+
+    // Continuously poll Active Devices explicitly bypassing stateless APIs!
+    setInterval(() => {
+        if (!isRunning) return;
+        ipcRenderer.invoke('get-active-students').then(count => {
+            document.getElementById('studentCount').innerText = count;
+        });
+    }, 2000);
+
+    // Default Browser Redirect Hooks
+    function openAdmin() { ipcRenderer.invoke('open-admin'); }
+    function openStudent() { ipcRenderer.invoke('open-student'); }
+
+    function toggleServer() {
+        if (isRunning) {
+            ipcRenderer.invoke('stop-server').then(() => {
+                isRunning = false;
+                document.getElementById('statusBadge').className = 'status-badge stopped';
+                document.getElementById('statusText').innerText = 'Stopped';
+                const btn = document.getElementById('toggleBtn');
+                btn.className = 'btn-success';
+                btn.innerHTML = '▶ Start Server';
+                document.getElementById('studentCount').innerText = '-';
+            });
+        } else {
+            ipcRenderer.invoke('start-server').then(() => {
+                isRunning = true;
+                document.getElementById('statusBadge').className = 'status-badge running';
+                document.getElementById('statusText').innerText = 'Running';
+                const btn = document.getElementById('toggleBtn');
+                btn.className = 'btn-danger';
+                btn.innerHTML = '🛑 Stop Server';
+            });
+        }
+    }
+
+    function copyUrl() {
+        navigator.clipboard.writeText(serverIpStr).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = 'Copied!';
+            btn.style.background = 'var(--success)';
+            setTimeout(() => {
+                btn.innerText = 'Copy URL';
+                btn.style.background = 'rgba(255,255,255,0.1)';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>
