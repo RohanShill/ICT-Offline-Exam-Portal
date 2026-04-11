@@ -2,7 +2,11 @@
     "name": "ict-online-quiz-system",
     "version": "2.0.0",
     "description": "ICT Online Examination System",
-    "author": "Rohan Shill <sillrohan@gmail.com>",
+    "author": {
+        "name": "Rohan Shill",
+        "email": "sillrohan@gmail.com"
+    },
+    "homepage": "https://github.com/RohanShill",
     "main": "main.js",
     "scripts": {
         "start": "electron .",
